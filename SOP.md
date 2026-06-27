@@ -1,6 +1,6 @@
 # SOP — sk_core
 
-Standard Operating Procedure for the `sk_core` crate, per the **sk-standards** DOC_SOP
+Standard Operating Procedure for the `sk_pqc` crate, per the **sk-standards** DOC_SOP
 9-section template. This is the operational reference for building, testing, releasing,
 and changing the sovereign shared Rust PQC core.
 
@@ -8,7 +8,7 @@ and changing the sovereign shared Rust PQC core.
 
 ## 1. Purpose & scope
 
-`sk_core` is a Rust library crate providing the SK ecosystem's post-quantum
+`sk_pqc` is a Rust library crate providing the SK ecosystem's post-quantum
 confidentiality primitives: a hybrid X25519 + ML-KEM-768 KEM, DM and group epoch
 ratchets, hybrid message sealing, a metadata-routing envelope, anonymous-queue
 addressing, a crypto-suite registry, and an honest PQC self-report.
@@ -191,7 +191,7 @@ Dart commit the vectors were checked against) in the release notes.
 
 ## 8. Operations & monitoring
 
-`sk_core` is a library — it has no runtime, daemon, port, or log of its own. Operational
+`sk_pqc` is a library — it has no runtime, daemon, port, or log of its own. Operational
 posture is observed through its **consumers**:
 
 - The `report` module is the runtime honesty surface: consumers call

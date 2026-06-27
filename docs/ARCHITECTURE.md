@@ -1,6 +1,6 @@
 # Architecture — sk_core
 
-This document gives the **data-flow** view of `sk_core`, per the sk-standards
+This document gives the **data-flow** view of `sk_pqc`, per the sk-standards
 DATA_FLOW_STANDARD: it traces a concrete DM-sealing path **hop by hop**, naming the module,
 the operation, and the **crypto posture** (what protects the bytes) at each step. For the
 static module dependency graph see [../SOP.md](../SOP.md) §2; for module summaries see

@@ -1,6 +1,6 @@
 # Security policy — sk_core
 
-`sk_core` is the sovereign shared Rust PQC core for the SK ecosystem. This document states
+`sk_pqc` is the sovereign shared Rust PQC core for the SK ecosystem. This document states
 its threat model, its cryptographic provenance (what is reused vs. what is original), the
 supported versions, and how to report a vulnerability.
 
@@ -8,7 +8,7 @@ supported versions, and how to report a vulnerability.
 
 ## Honest claims (read first)
 
-`sk_core` is a **hybrid** scheme. Its key-distribution surfaces stay confidential as long
+`sk_pqc` is a **hybrid** scheme. Its key-distribution surfaces stay confidential as long
 as **either** the classical X25519 leg **or** the ML-KEM-768 leg is unbroken. It is
 **not** "quantum-proof", "quantum-safe", or "unbreakable" and makes no such claim — those
 three words are mechanically forbidden in any externally-visible note (`report::FORBIDDEN_WORDS`).

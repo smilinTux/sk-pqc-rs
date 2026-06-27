@@ -1,10 +1,10 @@
-//! Behavioural tests for `sk_core`. Run with `cargo test`.
+//! Behavioural tests for `sk_pqc`. Run with `cargo test`.
 
-use sk_core::kem::{
+use sk_pqc::kem::{
     hybrid_decap, hybrid_encap, hybrid_keypair, CIPHERTEXT_LEN, PRIVATE_KEY_LEN, PUBLIC_KEY_LEN,
     SHARED_SECRET_LEN,
 };
-use sk_core::ratchet::{
+use sk_pqc::ratchet::{
     derive_dm_message_key, should_rekey, DEFAULT_REKEY_AGE_SECONDS, DEFAULT_REKEY_MSG_BOUND,
 };
 

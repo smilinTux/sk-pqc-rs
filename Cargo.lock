@@ -417,7 +417,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sk_core"
+name = "sk-pqc"
 version = "0.1.0"
 dependencies = [
  "aes-gcm",

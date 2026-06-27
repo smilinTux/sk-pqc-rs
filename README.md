@@ -3,7 +3,7 @@
 > ⚠️ **Experimental · pre-1.0 · NOT independently security-audited.** Clean-room reference implementation: tested + Python-parity-verified, but no third-party audit, fuzzing, or formal review. Binds vetted crates (RustCrypto `ml-kem`, `x25519-dalek`); the wiring is original. **Review before production use.**
 
 
-**What it is:** `sk_core` is the **sovereign shared Rust post-quantum cryptography
+**What it is:** `sk_pqc` is the **sovereign shared Rust post-quantum cryptography
 (PQC) core** for the SK ecosystem — a small, audited-dependency, clean-room Rust crate
 that implements the hybrid key agreement, message-sealing, ratchet, routing-envelope,
 anonymous-addressing, crypto-suite-registry, and honest-self-report primitives that the
@@ -85,7 +85,7 @@ sealed tokens   "pqdm1:" (one-shot seal) · "pqdr1:" (ratchet frame) · "aqid:" 
 
 ## Cross-language interoperability
 
-`sk_core` does not invent a protocol; it is a **third implementation** of an existing one.
+`sk_pqc` does not invent a protocol; it is a **third implementation** of an existing one.
 Three independent codebases speak the same wire:
 
 - **Python** — `skcomms` (`pqkem.py`, `pqdm.py`, `pqroute.py`, `anon_queue.py`,
@@ -119,7 +119,7 @@ non-deterministic paths.
 ## Usage sketch
 
 ```rust
-use sk_core::{kem, pqdm, ratchet};
+use sk_pqc::{kem, pqdm, ratchet};
 
 // 1. Hybrid KEM key agreement (X25519 + ML-KEM-768, FIPS 203 leg).
 let bob = kem::hybrid_keypair();                       // 1216-byte pub, 2432-byte priv

@@ -1,5 +1,5 @@
 [package]
-name = "sk_core"
+name = "sk-pqc"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.85"
@@ -10,7 +10,7 @@ keywords = ["pqc", "ml-kem", "x25519", "hybrid", "ratchet"]
 categories = ["cryptography"]
 
 [lib]
-name = "sk_core"
+name = "sk_pqc"
 
 [dependencies]
 x25519-dalek = { version = "2", features = ["static_secrets"] }
