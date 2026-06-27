@@ -1,5 +1,17 @@
 # sk_pqc
 
+[![crates.io](https://img.shields.io/crates/v/sk-pqc.svg?logo=rust)](https://crates.io/crates/sk-pqc)
+[![docs.rs](https://img.shields.io/docsrs/sk-pqc?logo=docs.rs)](https://docs.rs/sk-pqc)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+
+```bash
+cargo add sk-pqc          # crate: sk-pqc · import: use sk_pqc;
+```
+
+> Sibling implementations (all import as `sk_pqc`, byte-for-byte interoperable):
+> PyPI [`sk-pqc`](https://pypi.org/project/sk-pqc/) (`pip install sk-pqc`) ·
+> pub.dev [`sk_pqc`](https://pub.dev/packages/sk_pqc) (`dart pub add sk_pqc`).
+
 > ⚠️ **Experimental · pre-1.0 · NOT independently security-audited.** Clean-room reference implementation: tested + Python-parity-verified, but no third-party audit, fuzzing, or formal review. Binds vetted crates (RustCrypto `ml-kem`, `x25519-dalek`); the wiring is original. **Review before production use.**
 
 
@@ -171,7 +183,9 @@ and the wire/label layout are original. See [SECURITY.md](SECURITY.md).
 here (a later coordination task). Clean-room implementation matching the Python reference;
 parity tests pin the deterministic constructions against Python-computed vectors.
 
-**License:** Apache-2.0.
+**License:** [Apache-2.0](LICENSE). See [CHANGELOG.md](CHANGELOG.md) for the release
+history and [CONTRIBUTING.md](CONTRIBUTING.md) (+ [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md))
+before opening a PR.
 
 ---
 
@@ -188,4 +202,7 @@ parity tests pin the deterministic constructions against Python-computed vectors
   DATA_FLOW_STANDARD, DOC_SOP, VERSION_STANDARD) this crate's docs and honesty gates
   conform to.
 - Architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · Standard operating
-  procedure: [SOP.md](SOP.md) · Threat model: [SECURITY.md](SECURITY.md).
+  procedure: [SOP.md](SOP.md) · Threat model: [SECURITY.md](SECURITY.md) ·
+  Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · Conduct:
+  [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · Changes: [CHANGELOG.md](CHANGELOG.md) ·
+  License: [LICENSE](LICENSE) (Apache-2.0).
