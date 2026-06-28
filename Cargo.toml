@@ -38,10 +38,19 @@ subtle = "2"
 # provides it), so `cargo test` without `--features python` never compiles pyo3
 # and never needs a Python runtime. Gated so the published crate stays pure Rust.
 pyo3 = { version = "0.22", features = ["abi3-py38", "extension-module"], optional = true }
+# OPTIONAL flutter_rust_bridge bindings (feature `dart`). Lets the Dart `sk_pqc`
+# package be backed by THIS pure-Rust core over FFI (the Dart twin of the PyO3
+# win), the way the ML-KEM leg already reaches a native lib. Pinned to match the
+# `flutter_rust_bridge_codegen` used to emit the glue. Gated so the default
+# `cargo build`/`cargo test` never compiles frb and stays pure Rust.
+flutter_rust_bridge = { version = "=2.12.0", optional = true }
 
 [features]
 # Build the PyO3 #[pymodule] (`sk_pqc_rs`) into the cdylib. OFF by default.
 python = ["dep:pyo3"]
+# Build the flutter_rust_bridge API + codegen-emitted glue (`frb_api`,
+# `frb_generated`). OFF by default — the 99 in-tree tests never pull in frb.
+dart = ["dep:flutter_rust_bridge"]
 
 [dev-dependencies]
 hex = "0.4"

@@ -1,0 +1,33 @@
+# flutter_rust_bridge codegen config for the OPTIONAL Dart binding.
+#
+# Regenerates the cross-repo glue that lets the Dart `sk_pqc` package be backed
+# by THIS pure-Rust core over FFI (the Dart twin of the PyO3 win). NONE of this
+# is in the default build: the Rust side is gated behind `--features dart`, and
+# the Dart side lives under sk-pqc-dart/lib/src/rust/ used only by the parity
+# binding. The 99 in-tree `cargo test` cases never touch frb.
+#
+# Run from the sk-pqc-rs repo root (requires `flutter_rust_bridge_codegen`
+# 2.12.0 — `cargo install flutter_rust_bridge_codegen --version =2.12.0` — and a
+# Dart SDK on PATH for the sibling sk-pqc-dart checkout):
+#
+#   flutter_rust_bridge_codegen generate --config-file flutter_rust_bridge.yaml
+#
+# Assumes sk-pqc-rs and sk-pqc-dart are siblings (../sk-pqc-dart).
+
+rust_input: crate::frb_api
+rust_root: .
+rust_output: src/frb_generated.rs
+dart_output: ../sk-pqc-dart/lib/src/rust
+dart_root: ../sk-pqc-dart
+dart_entrypoint_class_name: RustPqcLib
+# Enable the gated module so frb's parser can see `frb_api`.
+rust_features:
+  - dart
+# u64 epoch/index/sizes -> Dart `int` (values are tiny; avoids BigInt churn).
+type_64bit_int: true
+# We already declare `#[cfg(feature = "dart")] mod frb_generated;` in lib.rs
+# (feature-gated). Let frb NOT rewrite lib.rs so the gate survives regen.
+add_mod_to_lib: false
+# Native-only binding (the parity harness runs on the Dart VM, not the browser).
+# Web (wasm) support is future work — see README "Dart bindings".
+web: false

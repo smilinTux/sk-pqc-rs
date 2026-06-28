@@ -188,6 +188,44 @@ decapsulates to the identical secret on the other (both directions).
 
 ---
 
+## Dart bindings (optional `dart` feature, via flutter_rust_bridge)
+
+The **same** pure-Rust core also backs the Dart `sk_pqc` package — the mirror of the
+PyO3 win on the Dart/Flutter side. The functions in [`src/frb_api.rs`](src/frb_api.rs)
+(`hybrid_keypair` / `hybrid_encap` / `hybrid_decap` / `derive_dm_message_key`, plus
+`suite_id` / `wire_sizes`) are exposed to Dart over
+[flutter_rust_bridge](https://github.com/fzyzcjy/flutter_rust_bridge). Like the `python`
+feature, this is **off by default**: `cargo build` / `cargo test` never compile frb and
+stay pure-Rust (the 99 in-tree tests are unchanged).
+
+The Rust↔Dart glue (`src/frb_generated.rs` here, and `lib/src/rust/` in the sibling
+`sk-pqc-dart` repo) is committed, so a Dart consumer only needs to **build the cdylib** —
+no codegen step unless `frb_api.rs` changes:
+
+```sh
+cargo build --release --features dart        # produces target/release/libsk_pqc.so
+```
+
+**Regenerating the glue** (only after editing `src/frb_api.rs`) — requires the matching
+codegen tool and a Dart SDK on `PATH`, with `sk-pqc-rs` and `sk-pqc-dart` as siblings:
+
+```sh
+cargo install flutter_rust_bridge_codegen --version =2.12.0
+flutter_rust_bridge_codegen generate --config-file flutter_rust_bridge.yaml
+```
+
+The config (`flutter_rust_bridge.yaml`) pins `rust_input: crate::frb_api`,
+`rust_features: [dart]`, writes Dart into `../sk-pqc-dart/lib/src/rust/`, and leaves the
+feature-gated `mod frb_generated;` in `lib.rs` intact (`add_mod_to_lib: false`). It is a
+native (non-web) binding; web/wasm is future work.
+
+**Parity**: the Dart-side harness (`sk-pqc-dart/test/rust_frb_parity_test.dart`) proves
+this Rust core, reached over frb, matches the existing pure-Dart `sk_pqc` **byte-for-byte**
+— `derive_dm_message_key` against the shared KAT, and hybrid-KEM cross-decapsulation in
+both directions (Dart-encap → Rust-decap and Rust-encap → Dart-decap).
+
+---
+
 ## Honest claims
 
 This crate is a **hybrid** scheme: it remains confidential as long as **either** the
@@ -211,9 +249,11 @@ and the wire/label layout are original. See [SECURITY.md](SECURITY.md).
 
 ## Status
 
-`0.1.0` — foundation primitives. PyO3/FFI bindings are intentionally **not** included
-here (a later coordination task). Clean-room implementation matching the Python reference;
-parity tests pin the deterministic constructions against Python-computed vectors.
+`0.1.0` — foundation primitives, plus the optional **PyO3** (`python`) and
+**flutter_rust_bridge** (`dart`) bindings that back the Python and Dart clients from this
+one core (both off by default — the crate stays pure-Rust). Clean-room implementation
+matching the Python reference; parity tests pin the deterministic constructions against
+Python- and Dart-computed vectors and prove cross-decapsulation in both directions.
 
 **License:** [Apache-2.0](LICENSE). See [CHANGELOG.md](CHANGELOG.md) for the release
 history and [CONTRIBUTING.md](CONTRIBUTING.md) (+ [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md))

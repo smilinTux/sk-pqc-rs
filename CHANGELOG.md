@@ -9,7 +9,17 @@ release** — see [SOP.md](SOP.md) §7.
 
 ## [Unreleased]
 
-_No changes yet._
+### Added
+- **Optional `dart` feature** — flutter_rust_bridge (frb) bindings (`src/frb_api.rs`)
+  so the Dart `sk_pqc` package can be backed by this same pure-Rust core over FFI (the
+  Dart twin of the `python`/PyO3 binding). Exposes `hybrid_keypair` / `hybrid_encap` /
+  `hybrid_decap` / `derive_dm_message_key` (+ `suite_id` / `wire_sizes`). Gated and
+  **off by default**: `cargo build` / `cargo test` stay pure-Rust and the 99 in-tree
+  tests are unchanged. Committed generated glue (`src/frb_generated.rs` + the sibling
+  `sk-pqc-dart/lib/src/rust/`), a `flutter_rust_bridge.yaml` codegen config, and a Dart
+  parity harness (`sk-pqc-dart/test/rust_frb_parity_test.dart`) proving byte-for-byte
+  agreement with the pure-Dart impl (shared KAT + hybrid-KEM cross-decapsulation both
+  directions). Native binding; web/wasm is future work. No wire change.
 
 ## [0.1.0] — 2026-06-27
 

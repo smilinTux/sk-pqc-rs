@@ -46,3 +46,15 @@ pub mod suites;
 // pull in pyo3 / link libpython. See `python.rs` and `pyproject.toml`.
 #[cfg(feature = "python")]
 mod python;
+
+// Optional flutter_rust_bridge (frb) bindings — only compiled with
+// `--features dart` (off by default), so the default build + the in-tree tests
+// stay pure-Rust and never pull in frb. `frb_api` is the hand-written API
+// surface; `frb_generated` is emitted by `flutter_rust_bridge_codegen generate`
+// (see `flutter_rust_bridge.yaml` + the README "Dart bindings" section). The
+// `mod frb_generated;` line is what codegen inserts/expects; it is committed so
+// `cargo build --features dart` works without re-running codegen.
+#[cfg(feature = "dart")]
+pub mod frb_api;
+#[cfg(feature = "dart")]
+mod frb_generated;
