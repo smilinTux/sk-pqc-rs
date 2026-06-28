@@ -1,0 +1,23 @@
+[package]
+name = "sk-pqc-fuzz-harness"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# Isolated from the parent crate (its own [workspace], NOT a member) so the
+# published `sk-pqc` crate + its 99 in-tree tests stay pure and untouched.
+# Stable-Rust fallback for cargo-fuzz, which needs nightly `-Zsanitizer`
+# (unavailable on the Arch system rustc with no rustup).
+[workspace]
+
+[[bin]]
+name = "campaign"
+path = "src/main.rs"
+
+[dependencies]
+sk-pqc = { path = ".." }
+rand = "0.8"
+base64 = "0.22"
+
+[dev-dependencies]
+proptest = "1"
