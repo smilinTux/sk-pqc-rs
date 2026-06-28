@@ -15,6 +15,11 @@
 //! derived secret holds as long as **either** the X25519 leg **or** the
 //! ML-KEM-768 leg holds.
 
+// The `?` operator on the already-`PyErr` results below desugars to an
+// identity `PyErr -> PyErr` `From` conversion that clippy flags as useless;
+// it is intrinsic to the `map_err(..)?` binding pattern, so allow it here.
+#![allow(clippy::useless_conversion)]
+
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;

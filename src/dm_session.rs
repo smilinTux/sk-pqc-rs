@@ -371,9 +371,11 @@ impl DmSession {
         my_hybrid_priv: &[u8],
     ) -> Result<Vec<u8>, DmSessionError> {
         if let Some(kam) = &frame.kam {
-            if !self.epoch_secrets.contains_key(&frame.epoch) {
+            if let std::collections::hash_map::Entry::Vacant(slot) =
+                self.epoch_secrets.entry(frame.epoch)
+            {
                 let secret = unwrap_dm_epoch_secret(kam, my_hybrid_priv)?;
-                self.epoch_secrets.insert(frame.epoch, secret);
+                slot.insert(secret);
             }
         }
         let secret = self

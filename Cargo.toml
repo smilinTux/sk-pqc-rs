@@ -54,3 +54,9 @@ dart = ["dep:flutter_rust_bridge"]
 
 [dev-dependencies]
 hex = "0.4"
+
+[lints.rust]
+# `frb_expand` is a cfg set only by the flutter_rust_bridge codegen tool, not
+# by cargo; register it so `unexpected_cfgs` recognises it (silences 6 lints in
+# the macro-generated `dart`-feature glue without blanket-allowing real typos).
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

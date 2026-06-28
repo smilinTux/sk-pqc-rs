@@ -108,7 +108,7 @@ fn combine(x25519_ss: &[u8], mlkem_ss: &[u8]) -> [u8; SHARED_SECRET_LEN] {
 pub fn hybrid_keypair() -> HybridKeyPair {
     let mut rng = OsRng;
 
-    let x_static = StaticSecret::random_from_rng(&mut rng);
+    let x_static = StaticSecret::random_from_rng(rng);
     let x_pub = PublicKey::from(&x_static);
     let x_seed = x_static.to_bytes();
 
@@ -147,7 +147,7 @@ pub fn hybrid_encap(peer_public_key: &[u8]) -> Result<(Vec<u8>, [u8; SHARED_SECR
     let ek = <MlKem768 as KemCore>::EncapsulationKey::from_bytes(&ek_enc);
 
     let mut rng = OsRng;
-    let x_eph = StaticSecret::random_from_rng(&mut rng);
+    let x_eph = StaticSecret::random_from_rng(rng);
     let x_eph_pub = PublicKey::from(&x_eph);
     let x_ss = x_eph.diffie_hellman(&x_peer);
 
