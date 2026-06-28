@@ -1,0 +1,40 @@
+# Maturin build config for the OPTIONAL PyO3 bindings (`--features python`).
+#
+# Produces an abi3 wheel (`sk_pqc_rs`) that spans CPython 3.8+ and is backed by
+# the pure-Rust hybrid X25519+ML-KEM-768 (FIPS 203) core — NO OpenSSL, NO
+# liboqs, so the wheel links clean (unlike OpenSSL-bound builds).
+#
+# Build:  ~/.skenv/bin/maturin build --release --features python \
+#                                    --interpreter ~/.skenv/bin/python
+#
+# This file does NOT change the Rust crate: `cargo build` / `cargo test` ignore
+# it and stay pure-Rust. The crate is NOT republished to crates.io from here.
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "sk-pqc-rs"
+version = "0.1.0"
+description = "Rust-backed (PyO3) hybrid X25519 + ML-KEM-768 (FIPS 203) PQC core — clean pure-Rust wheel, byte-for-byte interoperable with the Python sk_pqc. Hybrid (either-leg), not quantum-proof."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.8"
+keywords = ["pqc", "ml-kem", "x25519", "hybrid", "ratchet", "fips-203"]
+authors = [{ name = "smilinTux" }]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security :: Cryptography",
+]
+
+[project.urls]
+Repository = "https://github.com/smilinTux/sk-pqc-rs"
+
+[tool.maturin]
+# Importable module name = the #[pymodule] fn in src/python.rs.
+module-name = "sk_pqc_rs"
+# Always build the bindings feature when maturin drives the build.
+features = ["python"]
+# abi3 → forward-compatible single wheel across CPython 3.8+.

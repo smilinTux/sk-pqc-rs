@@ -11,6 +11,13 @@ categories = ["cryptography"]
 
 [lib]
 name = "sk_pqc"
+# `rlib` keeps the crate usable as a normal Rust dependency and lets the 99
+# in-tree tests link against it (the default `cargo build`/`cargo test` path is
+# unchanged + pure-Rust). `cdylib` is what maturin compiles into the Python
+# wheel; without the optional `python` feature it is just an inert pure-Rust
+# dynamic library (no pyo3, no libpython), so the published crate stays
+# dependency-clean and crates.io sees only pure Rust.
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 x25519-dalek = { version = "2", features = ["static_secrets"] }
@@ -26,6 +33,15 @@ hex = "0.4"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 subtle = "2"
+# OPTIONAL PyO3 bindings (feature `python`). abi3 → one wheel spans CPython
+# 3.8+; `extension-module` → the wheel does NOT link libpython (the interpreter
+# provides it), so `cargo test` without `--features python` never compiles pyo3
+# and never needs a Python runtime. Gated so the published crate stays pure Rust.
+pyo3 = { version = "0.22", features = ["abi3-py38", "extension-module"], optional = true }
+
+[features]
+# Build the PyO3 #[pymodule] (`sk_pqc_rs`) into the cdylib. OFF by default.
+python = ["dep:pyo3"]
 
 [dev-dependencies]
 hex = "0.4"

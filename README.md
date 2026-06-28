@@ -104,7 +104,8 @@ Three independent codebases speak the same wire:
   `crypto_suites.py`), `skchat` (`dm_ratchet.py`, `dm_session.py`, `group_ratchet.py`),
   and `sksecurity` (`pqc_report.py`) — the reference daemons.
 - **Dart** — `sk_pqc`, the mobile/desktop client library.
-- **Rust** — this crate, for native clients (and later FFI).
+- **Rust** — this crate, for native clients (and, via the optional `python` feature,
+  the PyO3 wheel that backs the Python services — see [below](#python-bindings-optional-python-feature)).
 
 They interoperate because they share, **byte-for-byte**:
 
@@ -153,6 +154,37 @@ let k = ratchet::derive_dm_message_key(&epoch_secret, /*epoch=*/0, /*index=*/0)?
 For the full stateful flows see [`dm_session::DmSession`](src/dm_session.rs)
 (auto-rekeying 1:1 sessions with `pqdr1:` tokens), [`group_ratchet::EpochRatchet`](src/group_ratchet.rs)
 (group key distribution), and [`pqroute::seal_routed`](src/pqroute.rs) (routing envelopes).
+
+---
+
+## Python bindings (optional `python` feature)
+
+The crate ships **optional** PyO3 bindings so the Python SK services can be backed by
+this pure-Rust core. Because the core is **pure Rust** (`ml-kem` + `x25519-dalek`, **no
+OpenSSL, no liboqs**), the wheel links clean. The bindings are gated behind the `python`
+feature and are **off by default** — `cargo build` / `cargo test` stay pure-Rust and never
+compile pyo3, and the crate published to crates.io is dependency-clean.
+
+Build an abi3 wheel (one wheel spans CPython 3.8+) with [maturin](https://www.maturin.rs):
+
+```sh
+maturin build --release --features python --interpreter python3
+pip install --no-deps target/wheels/sk_pqc_rs-*.whl
+```
+
+```python
+import sk_pqc_rs                     # Rust core; distinct from the pure-Python `sk_pqc`
+pub, priv = sk_pqc_rs.hybrid_keypair()
+ct, ss    = sk_pqc_rs.hybrid_encap(pub)           # 1120-byte ct, 32-byte secret
+assert sk_pqc_rs.hybrid_decap(ct, priv) == ss
+key = sk_pqc_rs.derive_dm_message_key(bytes(range(32)), 0, 0)   # 32-byte DM key
+```
+
+Exposed: `hybrid_keypair`, `hybrid_encap`, `hybrid_decap`, `derive_dm_message_key`
+(all returning `bytes`). The wheel is **cross-implementation parity-tested** against the
+Python `sk_pqc` (`tests/parity_python.py`): `derive_dm_message_key` matches byte-for-byte
+on the shared KAT, and a hybrid-KEM ciphertext produced by either implementation
+decapsulates to the identical secret on the other (both directions).
 
 ---
 

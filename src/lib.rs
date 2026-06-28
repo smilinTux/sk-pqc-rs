@@ -40,3 +40,9 @@ pub mod pqroute;
 pub mod ratchet;
 pub mod report;
 pub mod suites;
+
+// Optional PyO3 bindings — only compiled with `--features python` (off by
+// default), so the default build + the in-tree tests stay pure-Rust and never
+// pull in pyo3 / link libpython. See `python.rs` and `pyproject.toml`.
+#[cfg(feature = "python")]
+mod python;

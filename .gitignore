@@ -1,1 +1,7 @@
 /target
+# Python / maturin build artifacts (wheels land in /target/wheels)
+__pycache__/
+*.py[cod]
+*.so
+/dist
+.venv/
