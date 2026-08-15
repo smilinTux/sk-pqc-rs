@@ -5,9 +5,63 @@ are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this crate adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Because the wire format is a
 cross-language interop contract, **any wire-affecting change is a major (breaking)
-release** — see [SOP.md](SOP.md) §7.
+release**, see [SOP.md](SOP.md) section 5.
 
 ## [Unreleased]
+
+### Changed
+
+- **BREAKING (process, not code): the change-risk scale is renamed `T1`-`T5` -> `R1`-`R5`.**
+  It collided head-on with the sk-standards **maturity** tiers: `T2` means *Hybrid KEM* in
+  the `sk-pqc-py` and `sk-pqc-dart` siblings, but meant *additive, non-wire change* here,
+  for the same crate and the same suite. Renamed everywhere it appears, including the merge
+  gate checklist in `SOP.md` and the reviewer table and flow diagram in `CONTRIBUTING.md`.
+  A bare `T<n>` in this repo now always means maturity. Verified first that the scale was
+  **not** load-bearing in any automated gate: it appeared only as prose in `SOP.md` and
+  `CONTRIBUTING.md`, no CI workflow referenced it, no PR template existed, and no code
+  parsed it. The mechanical honesty gate (`report::FORBIDDEN_WORDS`) is independent of it.
+
+### Added
+
+- **A T0-T4 maturity declaration**, which this repo previously had **nowhere** (not in
+  README, SOP, or SECURITY): **T2 (Hybrid KEM)**, with T1 met, T3 out of scope and T4 N/A.
+  Added to both `README.md` and `SOP.md` section 9, with per-axis evidence and an explicit
+  note that the T2 claim covers key distribution and that a classical suite (or a ratchet
+  over a classical KEM) is still HNDL-exposed.
+- **A CRYPTOGRAPHY_STANDARD compliance statement**, which existed in neither `SOP.md` nor
+  `SECURITY.md`, citing the canonical
+  `sk-standards/blob/main/standards/CRYPTOGRAPHY_STANDARD.md`. It documents that this crate
+  is the only one of the three siblings enforcing the forbidden-word ban **in code**
+  (`report::FORBIDDEN_WORDS` + `is_honest_note` + `assert_honest`), together with two honest
+  limits: the screen covers three words rather than the standard's full list, and it applies
+  to **emitted notes**, not documentation prose.
+- `SOP.md` completed to the 9 canonical sections: added **Configuration / Usage** (Cargo
+  feature flags and the wire-affecting constants) and **Troubleshooting** (a symptom ->
+  check table, absorbing the old Operations and monitoring section as 8.1), plus the
+  maturity/version section above. Prerequisites folded into Build as 3.1; change control
+  became appendix A.
+- `SECURITY.md`: the **experimental / unaudited posture statement** (SECURITY_DISCLOSURE_
+  STANDARD section 2), a **72 hour acknowledgement SLA** (previously "a few business days"),
+  a safe-harbour clause, and a "what we especially want to hear about" list.
+- A `docs-evidence` block (10 hermetic checks) pinning the forbidden-word list, both honesty
+  functions, the suite id and HKDF label, the combiner **ordering** (order-sensitive, so a
+  swap is caught even though both lines survive), the wire sizes, the scheme prefixes, the
+  package/lib names and Rust floor, that both bindings stay off by default, and that the
+  change-risk scale has not regressed to `T1`-`T5`.
+- An "Unverified / needs an operator pass" section.
+- `.github/workflows/docs-check.yml` (tiers 1,2).
+
+### Fixed
+
+- Section cross-references broken by the renumbering (`SOP §7` / `§9` / `§3` in
+  `SECURITY.md` and `CONTRIBUTING.md`) now point at the right sections.
+
+### Known issues
+
+- **`wasm/pkg/` is committed build output**, including the binary
+  `wasm/pkg/sk_pqc_wasm_bg.wasm`. Nothing regenerates or validates it, so it will drift
+  from `wasm/src/lib.rs` silently, and a committed binary is not reviewable in a diff.
+  Flagged, not removed, since this is a docs-only change.
 
 ### Added
 - **Optional `dart` feature** — flutter_rust_bridge (frb) bindings (`src/frb_api.rs`)
