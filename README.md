@@ -246,6 +246,42 @@ We never hand-roll lattice, curve, AEAD, or MAC math: the ML-KEM leg is RustCryp
 are `sha2` + `hkdf`, and constant-time compares are `subtle`. Only the combiner *wiring*
 and the wire/label layout are original. See [SECURITY.md](SECURITY.md).
 
+### Maturity tier: **T2**
+
+Per the [sk-standards `CRYPTOGRAPHY_STANDARD.md`](https://github.com/smilinTux/sk-standards/blob/main/standards/CRYPTOGRAPHY_STANDARD.md)
+T0-T4 **maturity** scale, shared with the `sk-pqc-py` and `sk-pqc-dart` siblings:
+
+| Tier | State |
+|---|---|
+| **T0** Classical | superseded for the hybrid path; classical suites stay **registered and labelled classical**, which is what lets the self-report tell the truth about a classical peer |
+| **T1** Agile | **met.** A real `suites` registry plus a `report` module emitting per-surface status, primitives and FIPS refs |
+| **T2** Hybrid KEM | **met. This crate's tier.** `HKDF-SHA256(X25519_ss \|\| MLKEM768_ss)`, X25519 first, 32-byte output |
+| **T3** Hybrid sig | **not met, out of scope.** This crate signs nothing; FIPS 204 is cited only to scope it out |
+| **T4** Transport closed | **N/A**, a library with no transport leg |
+
+Scope it honestly: T2 covers **key distribution**. A conversation that negotiated a
+*classical* suite is still HNDL-exposed, and so is a ratchet built over a classical KEM
+no matter how many epochs it has. The `report` module says so regardless of ratchet
+level. Full per-axis evidence is in [SOP.md](SOP.md) section 9.
+
+> **Note on "T" numbers in this repo.** `T0`-`T4` always means the maturity scale above.
+> This repo's **change-risk** classes (used by the merge gate) were previously also
+> written `T1`-`T5`, where `T2` meant "additive, non-wire change". They are now
+> **`R1`-`R5`**. See [CONTRIBUTING.md](CONTRIBUTING.md) and SOP.md appendix A.
+
+### CRYPTOGRAPHY_STANDARD compliance
+
+`sk-pqc` (Rust) conforms to the sk-standards
+[CRYPTOGRAPHY_STANDARD](https://github.com/smilinTux/sk-standards/blob/main/standards/CRYPTOGRAPHY_STANDARD.md)
+honest-claim and binding rules: post-quantum / quantum-resistant wording only; every
+claim scoped to a named surface with its FIPS number; hybrid stated as **secure if
+either leg holds**; concat-then-KDF, never XOR, never pure-PQ; AES-256 never described
+as quantum-broken; vetted crates bound rather than primitives hand-rolled. Uniquely
+among the three siblings, the forbidden-word ban is **enforced in code** by
+[`report::FORBIDDEN_WORDS`](src/report.rs) and `is_honest_note`, not only in review.
+That mechanism screens the three absolute-guarantee words in **emitted report notes**;
+the standard's wider list and prose review remain a human gate.
+
 ---
 
 ## Status

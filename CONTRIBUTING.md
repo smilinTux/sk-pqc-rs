@@ -18,7 +18,7 @@ contributions are licensed under **[Apache-2.0](LICENSE)**.
 
 These come straight from the SKStacks
 [CRYPTOGRAPHY_STANDARD](https://github.com/smilinTux/sk-standards) and the project
-[SOP.md](SOP.md) §9 honesty gate — they are enforced in review:
+[SOP.md](SOP.md) appendix A honesty gate, and they are enforced in review:
 
 1. **We bind vetted crypto; we never hand-roll primitives.** The lattice math is
    RustCrypto [`ml-kem`](https://crates.io/crates/ml-kem) (FIPS 203), the curve is
@@ -60,7 +60,7 @@ flowchart LR
     G -->|"yes"| H["Update + re-verify a parity vector<br/>(Python ↔ Dart ↔ Rust agree)"]
     G -->|"no"| I["Open PR"]
     H --> I
-    I --> J["Review: T-tier + honest-claim + parity gate"]
+    I --> J["Review: R-class + honest-claim + parity gate"]
     style C fill:#51cf66,stroke:#2b8a3e,stroke-width:2px
     style H fill:#f59e0b,stroke:#d97706,stroke-width:2px
     style J fill:#4a90e2,stroke:#1e3a8a,stroke-width:2px,color:#fff
@@ -76,7 +76,7 @@ cargo build
 
 > **Concurrency note:** sibling agents may share this checkout. Don't race another
 > agent's `cargo` against the same `target/` — coordinate or set an isolated
-> `CARGO_TARGET_DIR` (see [SOP.md](SOP.md) §3).
+> `CARGO_TARGET_DIR` (see [SOP.md](SOP.md) section 3.1).
 
 ### Run the checks
 
@@ -102,17 +102,23 @@ cargo doc --no-deps                        # rustdoc must build; every public it
   respected (no implied authentication).
 - **Documented.** README / SOP / CHANGELOG updated when behaviour or interop changes.
 
-### Change-risk tiers (T-tier)
+### Change-risk classes (R1-R5)
 
-Match your PR to a tier from [SOP.md](SOP.md) §9 so reviewers know the bar:
+Match your PR to a class from [SOP.md](SOP.md) appendix A so reviewers know the bar.
 
-| Tier | Meaning | Review |
+> **Renamed 2026-08-15.** These were `T1`-`T5`, which collided with the sk-standards
+> **maturity** tiers: `T2` means *Hybrid KEM* in `sk-pqc-py` and `sk-pqc-dart`, but meant
+> *additive, non-wire change* here, for the same crate and the same suite. A bare `T<n>`
+> in this repo now always means maturity (this crate is **T2**, see
+> [SOP.md](SOP.md) section 9).
+
+| Class | Meaning | Review |
 | --- | --- | --- |
-| **T1** | Docs / comments only | 1 reviewer |
-| **T2** | Additive, non-wire (helper, test, refactor) | 1 reviewer + tests |
-| **T3** | Public API addition, no wire break | 2 reviewers + parity sanity |
-| **T4** | Wire / label / length change (cross-impl break) | 2 reviewers + Python + Dart parity re-verify + **major** version bump |
-| **T5** | Crypto-construction / primitive change | crypto review + all of T4 + SECURITY.md update |
+| **R1** | Docs / comments only | 1 reviewer |
+| **R2** | Additive, non-wire (helper, test, refactor) | 1 reviewer + tests |
+| **R3** | Public API addition, no wire break | 2 reviewers + parity sanity |
+| **R4** | Wire / label / length change (cross-impl break) | 2 reviewers + Python + Dart parity re-verify + **major** version bump |
+| **R5** | Crypto-construction / primitive change | crypto review + all of R4 + SECURITY.md update |
 
 ### Especially welcome
 
@@ -134,7 +140,7 @@ Match your PR to a tier from [SOP.md](SOP.md) §9 so reviewers know the bar:
 
 ## Release (maintainers)
 
-Gated on the §9 honesty + parity gate — see [SOP.md](SOP.md) §7:
+Gated on the appendix A honesty + parity gate, see [SOP.md](SOP.md) section 5:
 
 1. Bump `version` in `Cargo.toml` per SemVer + add a `CHANGELOG.md` entry (a wire change
    is **never** a patch).
